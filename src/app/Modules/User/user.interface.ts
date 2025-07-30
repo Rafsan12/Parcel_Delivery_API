@@ -25,5 +25,5 @@ export interface IUser {
   password?: string;
   role: Role;
   auth: IAuthProvider[];
-  isActive: IsActive;
+  isActive?: IsActive;
 }
