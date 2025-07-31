@@ -1,3 +1,4 @@
+import { JwtPayload } from "jsonwebtoken";
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes";
@@ -13,6 +14,23 @@ const createUser = catchAsync(
       success: true,
       statusCode: httpStatus.CREATED,
       message: "User Created Successfully",
+      data: user,
+    });
+  }
+);
+
+const updateUser = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.params.id;
+    const verifiedToken = req.user as JwtPayload;
+    const payload = req.body;
+
+    const user = await UserServices.UpdateUser(userId, payload, verifiedToken);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.CREATED,
+      message: "User Updated Successfully",
       data: user,
     });
   }
@@ -35,5 +53,5 @@ const getAllUsers = catchAsync(
 export const UserControllers = {
   createUser,
   getAllUsers,
-  //   updateUser,
+  updateUser,
 };
