@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { z } from "zod";
 
 export const createParcelSchema = z.object({
@@ -20,6 +21,11 @@ export const createParcelSchema = z.object({
   weight: z.number({ message: "Weight is required" }).positive(),
 
   price: z.number().optional(),
+  sender: z
+    .string({ message: "Sender ID is required" })
+    .refine((value) => Types.ObjectId.isValid(value), {
+      message: "Sender must be a valid ObjectId",
+    }),
 });
 
 export const updateParcelStatusSchema = z.object({

@@ -20,6 +20,7 @@ const createParcel = catchAsync(
 
 // Update Parcel Status Api
 const updateParcelStatus = catchAsync(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
     const { status } = req.body;

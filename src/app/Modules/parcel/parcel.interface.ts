@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 export enum DeliveryArea {
   INSIDE_DHAKA = "INSIDE_DHAKA",
   OUTSIDE_DHAKA = "OUTSIDE_DHAKA",
@@ -17,6 +19,7 @@ export interface IStatusLogEntry {
 
 export interface IParcel {
   trackingId: string;
+  sender: Types.ObjectId;
   customerName: string;
   customerEmail: string;
   customerPhone: string;
