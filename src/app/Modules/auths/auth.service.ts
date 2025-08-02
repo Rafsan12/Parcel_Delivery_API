@@ -26,24 +26,6 @@ const credentialsLogin = async (payload: Partial<IUser>) => {
     throw new AppError(httpStatus.BAD_REQUEST, "Incorrect Password");
   }
 
-  // const jwtPayload = {
-  //   userId: isUserExist._id,
-  //   email: isUserExist.email,
-  //   role: isUserExist.role,
-  // };
-
-  // const accessToken = generateToken(
-  //   jwtPayload,
-  //   envVas.JWT_ACCESS_SECRET,
-  //   envVas.JWT_ACCESS_EXPIRES
-  // );
-
-  // const refreshToken = generateToken(
-  //   jwtPayload,
-  //   envVas.JWT_REFRESH_SECRET,
-  //   envVas.JWT_REFRESH_EXPIRES
-  // );
-
   const userToken = createUserTokens(isUserExist);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -51,7 +33,6 @@ const credentialsLogin = async (payload: Partial<IUser>) => {
   return {
     accessToken: userToken.accessToken,
     refreshToken: userToken.refreshToken,
-
     user: rest,
   };
 };

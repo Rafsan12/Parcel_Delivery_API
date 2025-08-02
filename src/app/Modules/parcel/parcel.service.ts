@@ -1,10 +1,25 @@
+import httpStatus from "http-status-codes";
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import AppError from "../../errorHelpers/AppError";
 import { calculatePrice } from "../../utils/calculatePrice";
+import { Role } from "../User/user.interface";
+import { User } from "../User/user.model";
 import { IParcel, ParcelStatus } from "./parcel.interface";
 import { Parcel } from "./parcel.model";
 
 const createParcel = async (payload: Partial<IParcel>) => {
+  const senderUser = await User.findById(payload.sender);
+  if (!senderUser) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Sender user not found");
+  }
+
+  if (senderUser.role === Role.RECEIVER) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Receivers cannot create parcels"
+    );
+  }
+
   if (!payload.price) {
     payload.price = calculatePrice(payload.weight!, payload.deliveryArea!);
   }
@@ -21,11 +36,14 @@ const updateParcelStatus = async (
   const { id, status } = payload;
 
   if (!status) {
-    throw new AppError(400, "Status is required to update the parcel");
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Status is required to update the parcel"
+    );
   }
   const parcel = await Parcel.findById(id);
   if (!parcel) {
-    throw new AppError(404, "Parcel not found");
+    throw new AppError(httpStatus.FORBIDDEN, "Parcel not found");
   }
 
   parcel.status = status;
@@ -40,7 +58,7 @@ const parcelTracking = async (payload: Partial<IParcel>) => {
   const parcel = await Parcel.findOne({ trackingId });
 
   if (!parcel) {
-    throw new AppError(404, "Parcel not found");
+    throw new AppError(httpStatus.FORBIDDEN, "Parcel not found");
   }
   return parcel;
 };
