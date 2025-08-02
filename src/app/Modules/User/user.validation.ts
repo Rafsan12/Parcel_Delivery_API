@@ -52,17 +52,4 @@ export const updateZodSchema = z.object({
       message: "Invalid isActive status.",
     })
     .optional(),
-
-  auth: z
-    .array(
-      z.object({
-        provider: z.enum(["google", "credentials"], {
-          message: "Invalid auth provider.",
-        }),
-        providerId: z.string({
-          message: "providerId must be a string.",
-        }),
-      })
-    )
-    .optional(),
 });
