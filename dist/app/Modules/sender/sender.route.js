@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SenderRouter = void 0;
+const express_1 = require("express");
+const checkAuth_1 = require("../../middlewares/checkAuth");
+const user_interface_1 = require("../User/user.interface");
+const sender_controller_1 = require("./sender,controller");
+const router = (0, express_1.Router)();
+router.get("/:id", (0, checkAuth_1.checkAuth)(user_interface_1.Role.SENDER, user_interface_1.Role.ADMIN, user_interface_1.Role.SUPER_ADMIN), sender_controller_1.SenderControllers.getAllParcelCount);
+exports.SenderRouter = router;

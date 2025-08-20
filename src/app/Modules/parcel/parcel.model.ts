@@ -33,6 +33,7 @@ const parcelSchema = new Schema<IParcel>(
     },
     sender: { type: Schema.Types.ObjectId, ref: "User", required: true },
     customerName: { type: String, required: true },
+    customerEmail: { type: String, required: true },
     customerPhone: { type: String, required: true },
     deliveryAddress: { type: String, required: true },
     deliveryArea: {

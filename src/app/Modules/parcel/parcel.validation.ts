@@ -5,6 +5,7 @@ export const createParcelSchema = z.object({
   customerName: z
     .string({ message: "Customer name is required" })
     .min(2, { message: "Customer name must be at least 2 characters." }),
+  customerEmail: z.string().email("Must be a valid email"),
 
   customerPhone: z
     .string({ message: "Customer phone is required" })
