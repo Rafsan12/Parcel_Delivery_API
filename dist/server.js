@@ -12,22 +12,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const env_1 = require("./app/config/env");
 const mongoose_1 = __importDefault(require("mongoose"));
 const app_1 = __importDefault(require("./app"));
+const seedSuperAdmin_1 = require("./app/utils/seedSuperAdmin");
 let server;
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield mongoose_1.default.connect("mongodb+srv://tourDB:hKjV1NQOMlc3m8vf@cluster0.bytzc92.mongodb.net/Parcel_Delivery_DB?retryWrites=true&w=majority&appName=Cluster0");
+        yield mongoose_1.default.connect(env_1.envVas.DB_URL);
         console.log("connect to DB");
-        server = app_1.default.listen(5000, () => {
-            console.log(`Server is listening to port 5000`);
+        server = app_1.default.listen(env_1.envVas.PORT, () => {
+            console.log(`Server is listening to port ${env_1.envVas.PORT}`);
         });
     }
     catch (error) {
         console.log(error);
     }
 });
-startServer();
+(() => __awaiter(void 0, void 0, void 0, function* () {
+    yield startServer();
+    yield (0, seedSuperAdmin_1.seedSuperAdmin)();
+}))();
 process.on("SIGTERM", () => {
     console.log("SIGTERM signal received... Server shutting down..");
     if (server) {
