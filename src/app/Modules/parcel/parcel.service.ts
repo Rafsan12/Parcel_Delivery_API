@@ -5,6 +5,8 @@ import AppError from "../../errorHelpers/AppError";
 import { calculatePrice } from "../../utils/calculatePrice";
 import { PAYMENT_STATUS } from "../payment/payment.interface";
 import { Payment } from "../payment/payment.models";
+import { ISSLCommerz } from "../SSLCommerz/SSLCommerz.interface";
+import { SSLService } from "../SSLCommerz/SSLCommerz.service";
 import { Role } from "../User/user.interface";
 import { User } from "../User/user.model";
 import { IParcel, ParcelStatus } from "./parcel.interface";
@@ -14,14 +16,13 @@ const getTransactionId = () => {
   return `tran_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
 };
 
-const createParcel = async (payload: Partial<IParcel>, userId: string) => {
+const createParcel = async (payload: Partial<IParcel>) => {
   const transactionId = getTransactionId();
 
   const session = await Parcel.startSession();
   session.startTransaction();
 
   try {
-    const user = await User.findById(userId);
     const senderUser = await User.findById(payload.sender);
 
     if (!senderUser) {
@@ -35,7 +36,6 @@ const createParcel = async (payload: Partial<IParcel>, userId: string) => {
       );
     }
 
-    // 🔑 Receiver email mandatory check
     if (!payload.customerEmail) {
       throw new AppError(
         httpStatus.BAD_REQUEST,
@@ -48,12 +48,10 @@ const createParcel = async (payload: Partial<IParcel>, userId: string) => {
       payload.deliveryArea!
     ));
 
-    // payload.status = ParcelStatus.PENDING;
-
     const parcel = await Parcel.create(
       [
         {
-          user: userId,
+          sender: payload.sender,
           status: ParcelStatus.PENDING,
           ...payload,
         },
@@ -81,9 +79,23 @@ const createParcel = async (payload: Partial<IParcel>, userId: string) => {
       { new: true, runValidators: true, session }
     );
 
+    const sslPayload: ISSLCommerz = {
+      address: payload.deliveryAddress!,
+      email: payload.customerEmail,
+      phoneNumber: payload.customerPhone!,
+      name: payload.customerName!,
+      amount: totalPrice,
+      transactionId: transactionId,
+    };
+
+    const sslPayment = await SSLService.SSLPaymentInit(sslPayload);
+
     await session.commitTransaction();
     session.endSession();
-    return updateParcel;
+    return {
+      paymentURL: sslPayment.GatewayPageURL,
+      parcel: updateParcel,
+    };
   } catch (error: any) {
     await session.abortTransaction();
     session.endSession();
