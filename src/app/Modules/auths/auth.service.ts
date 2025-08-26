@@ -1,12 +1,14 @@
 import bcryptjs from "bcryptjs";
 import httpStatus from "http-status-codes";
 import AppError from "../../errorHelpers/AppError";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import {
   createNewAccessTokenWithRefreshToken,
   createUserTokens,
 } from "../../utils/userToken";
 import { IUser } from "../User/user.interface";
 import { User } from "../User/user.model";
+import { envVas } from "../../config/env";
 
 const credentialsLogin = async (payload: Partial<IUser>) => {
   const { email, password } = payload;
@@ -46,7 +48,39 @@ const getNewAccessToken = async (refreshToken: string) => {
   };
 };
 
+const resetPassword = async(payload:Record<string,any>,decodedToken:JwtPayload)=>{
+  if(payload.id !== decodedToken.userId){
+    throw new AppError(httpStatus.BAD_REQUEST, "You can not reset your password")
+  }
+
+  const isUserExist = await User.findById(decodedToken.userId);
+
+  if(!isUserExist){
+    throw new AppError(httpStatus.BAD_REQUEST,"User does not exist")
+  }
+
+  const hashPassword = await bcryptjs.hash(payload.newPassword,Number(envVas.BCRYPT_SALT_ROUND));
+
+  isUserExist.password = hashPassword;
+
+  await isUserExist.save();
+}
+
+const changePassword = async(oldPassword:string, newPassword:string,decodedToken:JwtPayload)=>{
+  const user = await User.findById(decodedToken.userId)
+
+  const isOldPasswordMatch = await bcryptjs.compare(oldPassword,user!.password as string)
+  if (!isOldPasswordMatch) {
+        throw new AppError(httpStatus.UNAUTHORIZED, "Old Password does not match");
+    }
+
+    user!.password = await bcryptjs.hash(newPassword,Number(envVas.BCRYPT_SALT_ROUND))
+
+    user!.save()
+}
+
 export const AuthService = {
   credentialsLogin,
   getNewAccessToken,
+  resetPassword,
 };
