@@ -2,7 +2,7 @@ import { IParcel } from "../parcel/parcel.interface";
 import { Parcel } from "../parcel/parcel.model";
 
 const receiverTotalParcel = async (payload: Partial<IParcel>) => {
-  const { customerEmail, trackingId } = payload;
+  const { customerEmail } = payload;
   if (!customerEmail) {
     throw new Error("customerEmail is required");
   }

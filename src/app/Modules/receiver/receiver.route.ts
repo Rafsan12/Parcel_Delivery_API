@@ -5,7 +5,7 @@ import { ReceiverController } from "./receiver.controller";
 const router = express.Router();
 
 router.post(
-  "/receiver",
+  "/",
   checkAuth(...Object.values(Role)),
   ReceiverController.receiverTotalParcel
 );
