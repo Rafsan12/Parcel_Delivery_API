@@ -36,15 +36,6 @@ export const updateZodSchema = z.object({
     .max(100, { message: "Email cannot exceed 100 characters." })
     .optional(),
 
-  password: z
-    .string({ message: "Password must be a string" })
-    .min(8, { message: "Password must be at least 8 characters long." })
-    .regex(/^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d).+$/, {
-      message:
-        "Password must contain at least 1 uppercase letter, 1 number, and 1 special character.",
-    })
-    .optional(),
-
   role: z.enum(Object.values(Role) as [string]).optional(),
 
   isActive: z
@@ -53,3 +44,12 @@ export const updateZodSchema = z.object({
     })
     .optional(),
 });
+
+// password: z
+//   .string({ message: "Password must be a string" })
+//   .min(8, { message: "Password must be at least 8 characters long." })
+//   .regex(/^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d).+$/, {
+//     message:
+//       "Password must contain at least 1 uppercase letter, 1 number, and 1 special character.",
+//   })
+//   .optional(),
