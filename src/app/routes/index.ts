@@ -1,6 +1,10 @@
 import { Router } from "express";
 import { UserRoutes } from "../Modules/User/user.route";
 import { AuthRouter } from "../Modules/auths/auth.route";
+import { ParcelRouter } from "../Modules/parcel/parcel.route";
+import { PaymentRouter } from "../Modules/payment/payment.routes";
+import { ReceiverRoutes } from "../Modules/receiver/receiver.route";
+import { SenderRouter } from "../Modules/sender/sender.route";
 
 export const router = Router();
 const moduleRoutes = [
@@ -11,6 +15,22 @@ const moduleRoutes = [
   {
     path: "/auth",
     route: AuthRouter,
+  },
+  {
+    path: "/parcel",
+    route: ParcelRouter,
+  },
+  {
+    path: "/sender",
+    route: SenderRouter,
+  },
+  {
+    path: "/receiver",
+    route: ReceiverRoutes,
+  },
+  {
+    path: "/payment",
+    route: PaymentRouter,
   },
 ];
 
