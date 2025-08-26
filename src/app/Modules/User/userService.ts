@@ -51,13 +51,6 @@ const UpdateUser = async (
     throw new AppError(httpStatus.FORBIDDEN, "You are not authorized");
   }
 
-  if (payload.password) {
-    payload.password = await bcryptjs.hash(
-      payload.password,
-      envVas.BCRYPT_SALT_ROUND
-    );
-  }
-
   const newUser = await User.findByIdAndUpdate(userId, payload, {
     new: true,
     runValidators: true,
