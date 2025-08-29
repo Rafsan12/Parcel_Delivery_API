@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes";
+import { JwtPayload } from "jsonwebtoken";
 import AppError from "../../errorHelpers/AppError";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { setAuthCookie } from "../../utils/setCookie";
 import { AuthService } from "./auth.service";
-import { JwtPayload } from "jsonwebtoken";
 
 const credentialsLogin = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -63,35 +63,55 @@ const logout = catchAsync(
   }
 );
 
-const resetPassword = catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
-  const decodedToken = req.user;
+const resetPassword = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user;
 
-  await AuthService.resetPassword(req.body,decodedToken as JwtPayload);
+    await AuthService.resetPassword(req.body, decodedToken as JwtPayload);
 
-  sendResponse(res,{
-    success: true,
-        statusCode: httpStatus.OK,
-        message: "Password Changed Successfully",
-        data: null,
-  });
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Password Changed Successfully",
+      data: null,
+    });
+  }
+);
 
-})
-
-const changePassword = catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
-   const newPassword = req.body.newPassword;
+const changePassword = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const newPassword = req.body.newPassword;
     const oldPassword = req.body.oldPassword;
-    const decodedToken = req.user
+    const decodedToken = req.user;
 
-    await AuthService.changePassword(oldPassword, newPassword, decodedToken as JwtPayload);
+    await AuthService.changePassword(
+      oldPassword,
+      newPassword,
+      decodedToken as JwtPayload
+    );
 
-  sendResponse(res,{
-    success: true,
-        statusCode: httpStatus.OK,
-        message: "Password Changed Successfully",
-        data: null,
-  });
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Password Changed Successfully",
+      data: null,
+    });
+  }
+);
 
-})
+const forgetPassword = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { email } = req.body;
+    await AuthService.forgetPassword(email);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Email Sent Successfully",
+      data: null,
+    });
+  }
+);
 
 export const AuthController = {
   credentialsLogin,
@@ -99,4 +119,5 @@ export const AuthController = {
   logout,
   resetPassword,
   changePassword,
+  forgetPassword,
 };
