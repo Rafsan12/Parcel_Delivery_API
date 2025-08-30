@@ -22,6 +22,7 @@ const userSchema = new Schema<IUser>(
       enum: Object.values(Role),
       default: Role.RECEIVER,
     },
+    isVerified: { type: Boolean, default: false },
     auth: [AuthProviderSchema],
     isActive: {
       type: String,
