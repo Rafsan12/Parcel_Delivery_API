@@ -1,12 +1,12 @@
 {
   "name": "parcel-delivery-api",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Parcel delivery backend API",
+  "main": "dist/server.js",
   "scripts": {
     "start": "node ./dist/server.js",
     "dev": "ts-node-dev --respawn --transpile-only ./src/server.ts",
-    "build": "npm install --force && tsc",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "npx eslint ./src"
   },
@@ -59,6 +59,7 @@
     "passport-google-oauth20": "^2.0.0",
     "pdfkit": "^0.17.1",
     "redis": "^5.8.2",
+    "resend": "^6.0.2",
     "uuid": "^11.1.0",
     "zod": "^4.0.14"
   }

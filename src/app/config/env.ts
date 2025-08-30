@@ -32,6 +32,7 @@ interface EnvConfig {
     SMTP_HOST: string;
     SMTP_PORT: string;
     SMTP_USER: string;
+    // RESEND_API_KEY: string;
     SMTP_FROM: string;
   };
 
@@ -70,6 +71,7 @@ const loadEnvVariables = (): EnvConfig => {
     "SMTP_HOST",
     "SMTP_PORT",
     "SMTP_USER",
+    // "RESEND_API_KEY",
     "SMTP_FROM",
     "REDIS_HOST",
     "REDIS_PORT",
@@ -112,6 +114,7 @@ const loadEnvVariables = (): EnvConfig => {
       SMTP_PASS: process.env.SMTP_PASS as string,
       SMTP_HOST: process.env.SMTP_HOST as string,
       SMTP_PORT: process.env.SMTP_PORT as string,
+      // RESEND_API_KEY: process.env.RESEND_API_KEY as string,
       SMTP_USER: process.env.SMTP_USER as string,
       SMTP_FROM: process.env.SMTP_FROM as string,
     },

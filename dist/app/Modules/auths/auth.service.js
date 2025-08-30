@@ -24,10 +24,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const http_status_codes_1 = __importDefault(require("http-status-codes"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const env_1 = require("../../config/env");
 const AppError_1 = __importDefault(require("../../errorHelpers/AppError"));
+const sendEmail_1 = require("../../utils/sendEmail");
 const userToken_1 = require("../../utils/userToken");
+const user_interface_1 = require("../User/user.interface");
 const user_model_1 = require("../User/user.model");
 const credentialsLogin = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = payload;
@@ -54,7 +60,59 @@ const getNewAccessToken = (refreshToken) => __awaiter(void 0, void 0, void 0, fu
         accessToken: newAccessToken,
     };
 });
+const resetPassword = (payload, decodedToken) => __awaiter(void 0, void 0, void 0, function* () {
+    if (payload.id !== decodedToken.userId) {
+        throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "You can not reset your password");
+    }
+    const isUserExist = yield user_model_1.User.findById(decodedToken.userId);
+    if (!isUserExist) {
+        throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "User does not exist");
+    }
+    const hashPassword = yield bcryptjs_1.default.hash(payload.newPassword, Number(env_1.envVas.BCRYPT_SALT_ROUND));
+    isUserExist.password = hashPassword;
+    yield isUserExist.save();
+});
+const changePassword = (oldPassword, newPassword, decodedToken) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.User.findById(decodedToken.userId);
+    const isOldPasswordMatch = yield bcryptjs_1.default.compare(oldPassword, user.password);
+    if (!isOldPasswordMatch) {
+        throw new AppError_1.default(http_status_codes_1.default.UNAUTHORIZED, "Old Password does not match");
+    }
+    user.password = yield bcryptjs_1.default.hash(newPassword, Number(env_1.envVas.BCRYPT_SALT_ROUND));
+    user.save();
+});
+const forgetPassword = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    const isUserExist = yield user_model_1.User.findOne({ email });
+    if (!isUserExist) {
+        throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "User does not exist");
+    }
+    if (isUserExist.isActive === user_interface_1.IsActive.BLOCKED ||
+        isUserExist.isActive === user_interface_1.IsActive.INACTIVE) {
+        throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, `User is ${isUserExist.isActive}`);
+    }
+    const jwtPayload = {
+        userId: isUserExist._id,
+        email: isUserExist.email,
+        role: isUserExist.role,
+    };
+    const resetToken = jsonwebtoken_1.default.sign(jwtPayload, env_1.envVas.JWT_ACCESS_SECRET, {
+        expiresIn: "10m",
+    });
+    const resetLink = `${env_1.envVas.FRONTEND_URL}/reset-password?id=${isUserExist._id}&token=${resetToken}`;
+    (0, sendEmail_1.sendEmail)({
+        to: isUserExist.email,
+        subject: "Password Reset",
+        templateName: "forgetPassword",
+        templateData: {
+            name: isUserExist.name,
+            resetLink,
+        },
+    });
+});
 exports.AuthService = {
     credentialsLogin,
     getNewAccessToken,
+    resetPassword,
+    changePassword,
+    forgetPassword,
 };

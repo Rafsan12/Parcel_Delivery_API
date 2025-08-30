@@ -7,6 +7,7 @@ exports.createParcelSchema = zod_1.z.object({
     customerName: zod_1.z
         .string({ message: "Customer name is required" })
         .min(2, { message: "Customer name must be at least 2 characters." }),
+    customerEmail: zod_1.z.string().email("Must be a valid email"),
     customerPhone: zod_1.z
         .string({ message: "Customer phone is required" })
         .min(10, { message: "Phone must be at least 10 characters." }),

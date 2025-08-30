@@ -13,28 +13,72 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ParcelServices = void 0;
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const http_status_codes_1 = __importDefault(require("http-status-codes"));
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 const AppError_1 = __importDefault(require("../../errorHelpers/AppError"));
 const calculatePrice_1 = require("../../utils/calculatePrice");
+const payment_interface_1 = require("../payment/payment.interface");
+const payment_models_1 = require("../payment/payment.models");
+const SSLCommerz_service_1 = require("../SSLCommerz/SSLCommerz.service");
 const user_interface_1 = require("../User/user.interface");
 const user_model_1 = require("../User/user.model");
 const parcel_interface_1 = require("./parcel.interface");
 const parcel_model_1 = require("./parcel.model");
+const getTransactionId = () => {
+    return `tran_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+};
 const createParcel = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const senderUser = yield user_model_1.User.findById(payload.sender);
-    if (!senderUser) {
-        throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "Sender user not found");
+    const transactionId = getTransactionId();
+    const session = yield parcel_model_1.Parcel.startSession();
+    session.startTransaction();
+    try {
+        const senderUser = yield user_model_1.User.findById(payload.sender);
+        if (!senderUser) {
+            throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "Sender user not found");
+        }
+        if (senderUser.role === user_interface_1.Role.RECEIVER) {
+            throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "Receivers cannot create parcels");
+        }
+        if (!payload.customerEmail) {
+            throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "Receiver email (customerEmail) is required");
+        }
+        const totalPrice = (payload.price = (0, calculatePrice_1.calculatePrice)(payload.weight, payload.deliveryArea));
+        const parcel = yield parcel_model_1.Parcel.create([
+            Object.assign({ sender: payload.sender, status: parcel_interface_1.ParcelStatus.PENDING }, payload),
+        ], { session });
+        const payment = yield payment_models_1.Payment.create([
+            {
+                parcel: parcel[0]._id,
+                status: payment_interface_1.PAYMENT_STATUS.UNPAID,
+                transactionId: transactionId,
+                amount: totalPrice,
+            },
+        ], { session });
+        const updateParcel = yield parcel_model_1.Parcel.findByIdAndUpdate(parcel[0]._id, {
+            payment: payment[0]._id,
+        }, { new: true, runValidators: true, session });
+        const sslPayload = {
+            address: payload.deliveryAddress,
+            email: payload.customerEmail,
+            phoneNumber: payload.customerPhone,
+            name: payload.customerName,
+            amount: totalPrice,
+            transactionId: transactionId,
+        };
+        const sslPayment = yield SSLCommerz_service_1.SSLService.SSLPaymentInit(sslPayload);
+        yield session.commitTransaction();
+        session.endSession();
+        return {
+            paymentURL: sslPayment.GatewayPageURL,
+            parcel: updateParcel,
+        };
     }
-    if (senderUser.role === user_interface_1.Role.RECEIVER) {
-        throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "Receivers cannot create parcels");
+    catch (error) {
+        yield session.abortTransaction();
+        session.endSession();
+        throw error;
     }
-    if (!payload.price) {
-        payload.price = (0, calculatePrice_1.calculatePrice)(payload.weight, payload.deliveryArea);
-    }
-    payload.status = parcel_interface_1.ParcelStatus.PENDING;
-    const parcel = yield parcel_model_1.Parcel.create(payload);
-    return parcel;
 });
 const updateParcelStatus = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const { id, status } = payload;

@@ -28,6 +28,7 @@ const parcelSchema = new mongoose_1.Schema({
     },
     sender: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },
     customerName: { type: String, required: true },
+    customerEmail: { type: String, required: true },
     customerPhone: { type: String, required: true },
     deliveryAddress: { type: String, required: true },
     deliveryArea: {

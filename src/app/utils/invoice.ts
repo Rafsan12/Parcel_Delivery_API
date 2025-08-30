@@ -46,7 +46,7 @@ export const generatePdf = async (data: InvoiceData) => {
 
       // Header with Logo and Title
       if (data.logoPath && fs.existsSync(data.logoPath)) {
-        doc.image(data.logoPath, 40, 30, { width: 80, align: "left" });
+        doc.image(data.logoPath, 40, 30, { width: 80, align: "center" });
       } else {
         doc
           .font("Helvetica-Bold")

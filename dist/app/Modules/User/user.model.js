@@ -13,12 +13,15 @@ const AuthProviderSchema = new mongoose_1.Schema({
 const userSchema = new mongoose_1.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
+    phone: { type: String },
+    address: { type: String },
     password: { type: String },
     role: {
         type: String,
         enum: Object.values(user_interface_1.Role),
         default: user_interface_1.Role.RECEIVER,
     },
+    isVerified: { type: Boolean, default: false },
     auth: [AuthProviderSchema],
     isActive: {
         type: String,
