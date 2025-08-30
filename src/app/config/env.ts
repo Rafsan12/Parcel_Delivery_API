@@ -25,6 +25,12 @@ interface EnvConfig {
     SSL_FAIL_BACKEND_URL: string;
     SSL_CANCEL_BACKEND_URL: string;
   };
+  Redis: {
+    REDIS_HOST: string;
+    REDIS_PORT: string;
+    REDIS_USERNAME: string;
+    REDIS_PASSWORD: string;
+  };
 }
 
 const loadEnvVariables = (): EnvConfig => {
@@ -49,6 +55,10 @@ const loadEnvVariables = (): EnvConfig => {
     "SSL_SUCCESS_BACKEND_URL",
     "SSL_FAIL_BACKEND_URL",
     "SSL_CANCEL_BACKEND_URL",
+    "REDIS_HOST",
+    "REDIS_PORT",
+    "REDIS_USERNAME",
+    "REDIS_PASSWORD",
   ];
 
   requiredEnvVariables.forEach((key) => {
@@ -80,6 +90,12 @@ const loadEnvVariables = (): EnvConfig => {
       SSL_SUCCESS_BACKEND_URL: process.env.SSL_SUCCESS_BACKEND_URL as string,
       SSL_FAIL_BACKEND_URL: process.env.SSL_FAIL_BACKEND_URL as string,
       SSL_CANCEL_BACKEND_URL: process.env.SSL_CANCEL_BACKEND_URL as string,
+    },
+    Redis: {
+      REDIS_HOST: process.env.REDIS_HOST as string,
+      REDIS_PORT: process.env.REDIS_PORT as string,
+      REDIS_USERNAME: process.env.REDIS_USERNAME as string,
+      REDIS_PASSWORD: process.env.REDIS_PASSWORD as string,
     },
   };
 };
