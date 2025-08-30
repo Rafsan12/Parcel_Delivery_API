@@ -5,6 +5,7 @@ dotenv.config();
 interface EnvConfig {
   PORT: string;
   DB_URL: string;
+  FRONTEND_URL: string;
   NODE_ENV: "development" | "production";
   BCRYPT_SALT_ROUND: string;
   JWT_ACCESS_SECRET: string;
@@ -13,6 +14,7 @@ interface EnvConfig {
   JWT_REFRESH_EXPIRES: string;
   SUPER_ADMIN_EMAIL: string;
   SUPER_ADMIN_PASSWORD: string;
+
   SSL: {
     SSL_STORE_ID: string;
     SSL_STORE_PASS: string;
@@ -25,14 +27,6 @@ interface EnvConfig {
     SSL_FAIL_BACKEND_URL: string;
     SSL_CANCEL_BACKEND_URL: string;
   };
-<<<<<<< HEAD
-  Redis: {
-    REDIS_HOST: string;
-    REDIS_PORT: string;
-    REDIS_USERNAME: string;
-    REDIS_PASSWORD: string;
-  };
-=======
   EMAIL_SENDER: {
     SMTP_PASS: string;
     SMTP_HOST: string;
@@ -40,8 +34,13 @@ interface EnvConfig {
     SMTP_USER: string;
     SMTP_FROM: string;
   };
-  FRONTEND_URL: string;
->>>>>>> c62f145545c1d70305624c345bed8f48810c41da
+
+  Redis: {
+    REDIS_HOST: string;
+    REDIS_PORT: string;
+    REDIS_USERNAME: string;
+    REDIS_PASSWORD: string;
+  };
 }
 
 const loadEnvVariables = (): EnvConfig => {
@@ -49,6 +48,7 @@ const loadEnvVariables = (): EnvConfig => {
     "PORT",
     "DB_URL",
     "NODE_ENV",
+    "FRONTEND_URL",
     "BCRYPT_SALT_ROUND",
     "JWT_ACCESS_SECRET",
     "JWT_ACCESS_EXPIRES",
@@ -66,19 +66,15 @@ const loadEnvVariables = (): EnvConfig => {
     "SSL_SUCCESS_BACKEND_URL",
     "SSL_FAIL_BACKEND_URL",
     "SSL_CANCEL_BACKEND_URL",
-<<<<<<< HEAD
-    "REDIS_HOST",
-    "REDIS_PORT",
-    "REDIS_USERNAME",
-    "REDIS_PASSWORD",
-=======
     "SMTP_PASS",
     "SMTP_HOST",
     "SMTP_PORT",
     "SMTP_USER",
     "SMTP_FROM",
-    "FRONTEND_URL",
->>>>>>> c62f145545c1d70305624c345bed8f48810c41da
+    "REDIS_HOST",
+    "REDIS_PORT",
+    "REDIS_USERNAME",
+    "REDIS_PASSWORD",
   ];
 
   requiredEnvVariables.forEach((key) => {
@@ -112,20 +108,18 @@ const loadEnvVariables = (): EnvConfig => {
       SSL_FAIL_BACKEND_URL: process.env.SSL_FAIL_BACKEND_URL as string,
       SSL_CANCEL_BACKEND_URL: process.env.SSL_CANCEL_BACKEND_URL as string,
     },
-<<<<<<< HEAD
-    Redis: {
-      REDIS_HOST: process.env.REDIS_HOST as string,
-      REDIS_PORT: process.env.REDIS_PORT as string,
-      REDIS_USERNAME: process.env.REDIS_USERNAME as string,
-      REDIS_PASSWORD: process.env.REDIS_PASSWORD as string,
-=======
     EMAIL_SENDER: {
       SMTP_PASS: process.env.SMTP_PASS as string,
       SMTP_HOST: process.env.SMTP_HOST as string,
       SMTP_PORT: process.env.SMTP_PORT as string,
       SMTP_USER: process.env.SMTP_USER as string,
       SMTP_FROM: process.env.SMTP_FROM as string,
->>>>>>> c62f145545c1d70305624c345bed8f48810c41da
+    },
+    Redis: {
+      REDIS_HOST: process.env.REDIS_HOST as string,
+      REDIS_PORT: process.env.REDIS_PORT as string,
+      REDIS_USERNAME: process.env.REDIS_USERNAME as string,
+      REDIS_PASSWORD: process.env.REDIS_PASSWORD as string,
     },
   };
 };
