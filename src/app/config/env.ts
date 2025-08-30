@@ -25,12 +25,23 @@ interface EnvConfig {
     SSL_FAIL_BACKEND_URL: string;
     SSL_CANCEL_BACKEND_URL: string;
   };
+<<<<<<< HEAD
   Redis: {
     REDIS_HOST: string;
     REDIS_PORT: string;
     REDIS_USERNAME: string;
     REDIS_PASSWORD: string;
   };
+=======
+  EMAIL_SENDER: {
+    SMTP_PASS: string;
+    SMTP_HOST: string;
+    SMTP_PORT: string;
+    SMTP_USER: string;
+    SMTP_FROM: string;
+  };
+  FRONTEND_URL: string;
+>>>>>>> c62f145545c1d70305624c345bed8f48810c41da
 }
 
 const loadEnvVariables = (): EnvConfig => {
@@ -55,10 +66,19 @@ const loadEnvVariables = (): EnvConfig => {
     "SSL_SUCCESS_BACKEND_URL",
     "SSL_FAIL_BACKEND_URL",
     "SSL_CANCEL_BACKEND_URL",
+<<<<<<< HEAD
     "REDIS_HOST",
     "REDIS_PORT",
     "REDIS_USERNAME",
     "REDIS_PASSWORD",
+=======
+    "SMTP_PASS",
+    "SMTP_HOST",
+    "SMTP_PORT",
+    "SMTP_USER",
+    "SMTP_FROM",
+    "FRONTEND_URL",
+>>>>>>> c62f145545c1d70305624c345bed8f48810c41da
   ];
 
   requiredEnvVariables.forEach((key) => {
@@ -79,6 +99,7 @@ const loadEnvVariables = (): EnvConfig => {
     JWT_REFRESH_EXPIRES: process.env.JWT_REFRESH_EXPIRES as string,
     SUPER_ADMIN_EMAIL: process.env.SUPER_ADMIN_EMAIL as string,
     SUPER_ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD as string,
+    FRONTEND_URL: process.env.FRONTEND_URL as string,
     SSL: {
       SSL_STORE_ID: process.env.SSL_STORE_ID as string,
       SSL_STORE_PASS: process.env.SSL_STORE_PASS as string,
@@ -91,11 +112,20 @@ const loadEnvVariables = (): EnvConfig => {
       SSL_FAIL_BACKEND_URL: process.env.SSL_FAIL_BACKEND_URL as string,
       SSL_CANCEL_BACKEND_URL: process.env.SSL_CANCEL_BACKEND_URL as string,
     },
+<<<<<<< HEAD
     Redis: {
       REDIS_HOST: process.env.REDIS_HOST as string,
       REDIS_PORT: process.env.REDIS_PORT as string,
       REDIS_USERNAME: process.env.REDIS_USERNAME as string,
       REDIS_PASSWORD: process.env.REDIS_PASSWORD as string,
+=======
+    EMAIL_SENDER: {
+      SMTP_PASS: process.env.SMTP_PASS as string,
+      SMTP_HOST: process.env.SMTP_HOST as string,
+      SMTP_PORT: process.env.SMTP_PORT as string,
+      SMTP_USER: process.env.SMTP_USER as string,
+      SMTP_FROM: process.env.SMTP_FROM as string,
+>>>>>>> c62f145545c1d70305624c345bed8f48810c41da
     },
   };
 };
