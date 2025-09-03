@@ -45,6 +45,9 @@ const credentialsLogin = (payload) => __awaiter(void 0, void 0, void 0, function
     if (!isPasswordMatch) {
         throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "Incorrect Password");
     }
+    if (!isUserExist.isVerified) {
+        throw new AppError_1.default(http_status_codes_1.default.FORBIDDEN, "User not verified");
+    }
     const userToken = (0, userToken_1.createUserTokens)(isUserExist);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const _a = isUserExist.toObject(), { password: UserPassword } = _a, rest = __rest(_a, ["password"]);
