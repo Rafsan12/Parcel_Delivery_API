@@ -32,6 +32,10 @@ const credentialsLogin = async (payload: Partial<IUser>) => {
     throw new AppError(httpStatus.BAD_REQUEST, "Incorrect Password");
   }
 
+  if (!isUserExist.isVerified) {
+    throw new AppError(httpStatus.FORBIDDEN, "User not verified");
+  }
+
   const userToken = createUserTokens(isUserExist);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
