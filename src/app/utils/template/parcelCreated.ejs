@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h2>Hello <%= customerName %>,</h2>
+    <p>Your parcel has been created successfully!</p>
+    <p>
+      <strong>Tracking ID:</strong> <%= trackingId %><br />
+      <strong>Delivery Address:</strong> <%= deliveryAddress %><br />
+      <strong>Total Price:</strong> BDT <%= price %>
+    </p>
+    <p>
+      Please complete your payment by clicking this link:
+      <a href="<%= paymentURL %>">Pay Now</a>
+    </p>
+    <p>Thank you for choosing our service!</p>
+  </body>
+</html>

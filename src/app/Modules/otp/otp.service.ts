@@ -43,6 +43,7 @@ const sentOtp = async (email: string, name: string) => {
     },
   });
 };
+
 const verifyOtp = async (email: string, otp: string) => {
   const user = await User.findOne({ email });
 

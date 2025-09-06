@@ -15,6 +15,20 @@ const receiverTotalParcel = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const parcelDelivered = catchAsync(async (req: Request, res: Response) => {
+  const { parcelId } = req.params;
+
+  const result = await ReceiverService.parcelDelivered(parcelId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Parcel Desilvered Successfully",
+    data: result,
+  });
+});
+
 export const ReceiverController = {
   receiverTotalParcel,
+  parcelDelivered,
 };

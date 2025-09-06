@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, Types, model } from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 
 import { DeliveryArea, IParcel, ParcelStatus } from "./parcel.interface";
@@ -52,6 +52,7 @@ const parcelSchema = new Schema<IParcel>(
       type: [statusLogSchema],
       default: [],
     },
+    payment: { type: Types.ObjectId, ref: "Payment" },
   },
   {
     timestamps: true,

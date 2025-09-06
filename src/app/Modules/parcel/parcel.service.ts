@@ -3,6 +3,7 @@ import httpStatus from "http-status-codes";
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import AppError from "../../errorHelpers/AppError";
 import { calculatePrice } from "../../utils/calculatePrice";
+import { sendEmail } from "../../utils/sendEmail";
 import { PAYMENT_STATUS } from "../payment/payment.interface";
 import { Payment } from "../payment/payment.models";
 import { ISSLCommerz } from "../SSLCommerz/SSLCommerz.interface";
@@ -92,6 +93,21 @@ const createParcel = async (payload: Partial<IParcel>) => {
 
     await session.commitTransaction();
     session.endSession();
+    // console.log("Sending email with paymentURL:", sslPayment.GatewayPageURL);
+
+    await sendEmail({
+      to: payload.customerEmail,
+      subject: "Your Parcel Has Been Created",
+      templateName: "parcelCreated",
+      templateData: {
+        customerName: payload.customerName,
+        trackingId: updateParcel?.trackingId,
+        deliveryAddress: payload.deliveryAddress,
+        price: totalPrice,
+        paymentURL: sslPayment.GatewayPageURL,
+      },
+    });
+
     return {
       paymentURL: sslPayment.GatewayPageURL,
       parcel: updateParcel,

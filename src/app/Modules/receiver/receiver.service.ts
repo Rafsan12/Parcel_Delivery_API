@@ -1,5 +1,9 @@
-import { IParcel } from "../parcel/parcel.interface";
+import httpStatus from "http-status-codes";
+import AppError from "../../errorHelpers/AppError";
+import { IParcel, ParcelStatus } from "../parcel/parcel.interface";
 import { Parcel } from "../parcel/parcel.model";
+import { PAYMENT_STATUS } from "../payment/payment.interface";
+import { Payment } from "../payment/payment.models";
 
 const receiverTotalParcel = async (payload: Partial<IParcel>) => {
   const { customerEmail } = payload;
@@ -30,7 +34,31 @@ const receiverTotalParcel = async (payload: Partial<IParcel>) => {
     trackingData,
   };
 };
+const parcelDelivered = async (parcelId: string) => {
+  const parcel = await Parcel.findById(parcelId).populate("payment");
+  if (!parcel) {
+    throw new AppError(httpStatus.NOT_FOUND, "Parcel not found");
+  }
 
+  const payment = await Payment.findById(parcel.payment);
+  if (!payment) {
+    throw new AppError(httpStatus.NOT_FOUND, "Payment record not found");
+  }
+  if (payment.status !== PAYMENT_STATUS.PAID) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `Payment not completed for transactionId: ${payment.transactionId}`
+    );
+  }
+
+  parcel.status = ParcelStatus.DELIVERED;
+  parcel.statusLog.push({
+    status: ParcelStatus.DELIVERED,
+    changedAt: new Date(),
+  });
+  await parcel.save();
+};
 export const ReceiverService = {
   receiverTotalParcel,
+  parcelDelivered,
 };

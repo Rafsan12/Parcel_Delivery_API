@@ -6,8 +6,13 @@ const router = express.Router();
 
 router.post(
   "/",
-  checkAuth(...Object.values(Role)),
+  checkAuth(Role.RECEIVER),
   ReceiverController.receiverTotalParcel
+);
+router.patch(
+  "/:parcelId/delivered",
+  checkAuth(Role.RECEIVER, Role.SUPER_ADMIN),
+  ReceiverController.parcelDelivered
 );
 
 export const ReceiverRoutes = router;

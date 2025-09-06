@@ -1,4 +1,5 @@
 import { Types } from "mongoose";
+import { IPayment } from "./../payment/payment.interface";
 
 export enum DeliveryArea {
   INSIDE_DHAKA = "INSIDE_DHAKA",
@@ -9,6 +10,7 @@ export enum ParcelStatus {
   PICKED = "PICKED",
   DELIVERED = "DELIVERED",
   ON_THE_WAY = "ON_THE_WAY",
+  READY_FOR_DISPATCH = "READY_FOR_DISPATCH",
   CANCELLED = "CANCELLED",
 }
 
@@ -29,4 +31,5 @@ export interface IParcel {
   price: number;
   status: ParcelStatus;
   statusLog: IStatusLogEntry[];
+  payment: Types.ObjectId | IPayment;
 }
