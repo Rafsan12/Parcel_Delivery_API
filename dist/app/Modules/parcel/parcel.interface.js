@@ -12,5 +12,6 @@ var ParcelStatus;
     ParcelStatus["PICKED"] = "PICKED";
     ParcelStatus["DELIVERED"] = "DELIVERED";
     ParcelStatus["ON_THE_WAY"] = "ON_THE_WAY";
+    ParcelStatus["READY_FOR_DISPATCH"] = "READY_FOR_DISPATCH";
     ParcelStatus["CANCELLED"] = "CANCELLED";
 })(ParcelStatus || (exports.ParcelStatus = ParcelStatus = {}));

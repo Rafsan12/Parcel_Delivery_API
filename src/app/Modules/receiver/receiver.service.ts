@@ -34,6 +34,7 @@ const receiverTotalParcel = async (payload: Partial<IParcel>) => {
     trackingData,
   };
 };
+
 const parcelDelivered = async (parcelId: string) => {
   const parcel = await Parcel.findById(parcelId).populate("payment");
   if (!parcel) {

@@ -47,6 +47,7 @@ const parcelSchema = new mongoose_1.Schema({
         type: [statusLogSchema],
         default: [],
     },
+    payment: { type: mongoose_1.Types.ObjectId, ref: "Payment" },
 }, {
     timestamps: true,
 });
