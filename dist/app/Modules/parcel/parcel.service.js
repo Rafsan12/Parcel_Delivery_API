@@ -70,7 +70,6 @@ const createParcel = (payload) => __awaiter(void 0, void 0, void 0, function* ()
         const sslPayment = yield SSLCommerz_service_1.SSLService.SSLPaymentInit(sslPayload);
         yield session.commitTransaction();
         session.endSession();
-        // console.log("Sending email with paymentURL:", sslPayment.GatewayPageURL);
         yield (0, sendEmail_1.sendEmail)({
             to: payload.customerEmail,
             subject: "Your Parcel Has Been Created",

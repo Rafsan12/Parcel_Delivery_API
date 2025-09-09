@@ -14,16 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SenderControllers = void 0;
 const http_status_codes_1 = __importDefault(require("http-status-codes"));
-const mongoose_1 = require("mongoose");
 const catchAsync_1 = require("../../utils/catchAsync");
 const sendResponse_1 = require("../../utils/sendResponse");
 const sender_service_1 = require("./sender.service");
 const getAllParcelCount = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    const senderObjectId = new mongoose_1.Types.ObjectId(id);
-    const result = yield sender_service_1.SenderServices.getAllParcelCount({
-        sender: senderObjectId,
-    });
+    const result = yield sender_service_1.SenderServices.getAllParcelCount(id);
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
         statusCode: http_status_codes_1.default.OK,

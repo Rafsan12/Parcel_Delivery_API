@@ -11,9 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SenderServices = void 0;
 const parcel_model_1 = require("../parcel/parcel.model");
-const getAllParcelCount = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const { sender } = payload;
-    const parcels = yield parcel_model_1.Parcel.find({ sender });
+const getAllParcelCount = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const parcels = yield parcel_model_1.Parcel.find({ sender: userId }).populate("payment");
     const totalParcels = parcels.length;
     const totalAmount = parcels.reduce((sum, p) => sum + (p.price || 0), 0);
     const statusCounts = parcels.reduce((acc, parcel) => {
