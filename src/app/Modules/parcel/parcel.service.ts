@@ -93,7 +93,6 @@ const createParcel = async (payload: Partial<IParcel>) => {
 
     await session.commitTransaction();
     session.endSession();
-    // console.log("Sending email with paymentURL:", sslPayment.GatewayPageURL);
 
     await sendEmail({
       to: payload.customerEmail,

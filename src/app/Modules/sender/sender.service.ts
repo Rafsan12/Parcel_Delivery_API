@@ -1,10 +1,7 @@
-import { IParcel } from "../parcel/parcel.interface";
 import { Parcel } from "../parcel/parcel.model";
 
-const getAllParcelCount = async (payload: Partial<IParcel>) => {
-  const { sender } = payload;
-
-  const parcels = await Parcel.find({ sender });
+const getAllParcelCount = async (userId: string) => {
+  const parcels = await Parcel.find({ sender: userId }).populate("payment");
 
   const totalParcels = parcels.length;
   const totalAmount = parcels.reduce((sum, p) => sum + (p.price || 0), 0);
