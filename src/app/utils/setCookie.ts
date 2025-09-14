@@ -1,5 +1,4 @@
 import { Response } from "express";
-import { envVas } from "./../config/env";
 
 export interface AuthTokens {
   accessToken?: string;
@@ -7,12 +6,12 @@ export interface AuthTokens {
 }
 
 export const setAuthCookie = (res: Response, tokenInfo: AuthTokens) => {
-  const isProd = envVas.NODE_ENV === "production";
+  // const isProd = envVas.NODE_ENV === "production";
 
   const cookieOptions = {
     httpOnly: true,
-    secure: isProd,
-    sameSite: isProd ? ("none" as const) : ("lax" as const),
+    secure: true,
+    sameSite: "none" as const,
   };
 
   if (tokenInfo.accessToken) {
