@@ -1,8 +1,8 @@
+import { envVas } from "./../../config/env";
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes";
 import { JwtPayload } from "jsonwebtoken";
-import { envVas } from "../../config/env";
 import AppError from "../../errorHelpers/AppError";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
@@ -44,15 +44,18 @@ const getNewAccessToken = catchAsync(
 );
 const logout = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    const isProd = envVas.NODE_ENV === "production";
+
     res.clearCookie("accessToken", {
       httpOnly: true,
-      secure: envVas.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
     });
+
     res.clearCookie("refreshToken", {
       httpOnly: true,
-      secure: envVas.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
     });
 
     sendResponse(res, {
